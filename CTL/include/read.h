@@ -3,13 +3,19 @@
 #include<fcntl.h>
 #include<stdlib.h>
 #include<stdint.h>
+#include<sys/types.h>
 
 typedef enum Content_type{
-    BINARY = 0,                          // 0 represents that the file is binary file
-    TEXT = 1                             // 1 indicates that file is text file / regular file
+    C_UNKNOWN = 0 ,                         // No valid content available right now
+    C_BINARY = 1,                          // Read data is binary.
+    C_TEXT = 2                             // Read data is normal text.
 }Content_type;
 
 typedef enum CTL_status{
+    //============== SUCCESS =================
+
+    C_SUCCESS ,                           // CTL_SUCCESS
+
     //============== API ERRORS================
      C_EIA ,                              // CTL_ERRORINVALIDARGUMENT - Given argument is invalid
      C_ENA ,                              // CTL_ERRORNULLARGUMENT- Required pointer is NULL
@@ -35,7 +41,7 @@ typedef enum CTL_status{
     C_EOVERFLOW ,                         // CTL_ERROROVERFLOW - Size/offset calculation would overflow
     C_EINT                                // CTL_ERRORINTERNAL - Unexpected Internal library failure
     
-}STATUS;
+}CTL_STATUS;
 
 typedef struct Read_Result{
     void *buffer;                        // for storing read data 
@@ -44,9 +50,9 @@ typedef struct Read_Result{
 }Read_Result;
 
 typedef enum pos_mode{
-    START = 1,                           // Start reading from beginning
-    OFFSET = 2,                          // Start from any given offset
-    END = 3                              // start from end
+    C_START = 1,                           // Start reading from beginning
+    C_OFFSET = 2,                          // Start from any given offset
+    C_END = 3                              // start from end
 }pos_mode;
 
 typedef struct Read_Options{
@@ -56,6 +62,9 @@ typedef struct Read_Options{
 }Read_Options;
 
 
-ssize_t CTL_read(const char *path , const Read_Options *options , Read_Result *result);
+CTL_STATUS CTL_read(const char *path , const Read_Options *options , Read_Result *result);
 
+void CTL_FREE(void *ptr);
+
+void CTL_RDR_CLEANUP(Read_Result *result);
 
